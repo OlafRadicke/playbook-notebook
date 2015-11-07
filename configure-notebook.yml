@@ -1,0 +1,12 @@
+- name: configure localhost
+  hosts: 127.0.0.1
+  connection: local
+  roles:
+    - install-software
+    #- users
+    #- selinux
+    #- extra-repos-fc21
+
+
+
+

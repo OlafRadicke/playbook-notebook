@@ -1,0 +1,37 @@
+---
+- name: "install rpmfusion repo free"
+  shell: "dnf install -y http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
+
+- name: "install rpmfusion repo nonfree"
+  shell: "dnf install -y http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+
+- name: "Install desktop software"
+  dnf: 
+    name: "{{ item }}" 
+    state: "latest"
+  with_items:
+#    - chromium
+    - dia
+#    - flash-plugin
+    - fslint
+    - gimp
+#    - google-chrome-stable
+    - grip
+    - gnucash
+    - keepassx
+    - kcoloredit
+    - ksnapshot
+#    - lame
+    - mozilla-adblockplus
+    - mozilla-noscript
+    - okular
+    - pgadmin3
+    - vlc
+    - firefox
+    - mc
+  when: (ansible_distribution == "Fedora"  and ansible_distribution_major_version >= "22")
+#  ignore_errors: yes
+
+
+- name: "clean up dnf"
+  shell: "dnf clean all"
