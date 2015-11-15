@@ -7,30 +7,71 @@
 
 - name: "Install desktop software"
   dnf: 
-    name: "{{ item }}" 
+    name: "{{ item }}"
     state: "latest"
   with_items:
 #    - chromium
-    - dia
 #    - flash-plugin
     - fslint
-    - gimp
 #    - google-chrome-stable
-    - grip
     - gnucash
+    - kate
+    - kate-plugins
     - keepassx
-    - kcoloredit
-    - ksnapshot
 #    - lame
     - mozilla-adblockplus
     - mozilla-noscript
-    - okular
     - pgadmin3
-    - vlc
     - firefox
     - mc
+    - aspell
+    - hspell
+    - hunspell-de
+    - aspell-de
   when: (ansible_distribution == "Fedora"  and ansible_distribution_major_version >= "22")
 #  ignore_errors: yes
+
+
+- name: "Install desktop multimedia"
+  dnf: 
+    name: "{{ item }}"
+    state: "latest"
+  with_items:
+    - dia
+    - gimp
+    - grip
+    - kcoloredit
+    - ksnapshot
+    - okular
+    - vlc
+  when: (ansible_distribution == "Fedora"  and ansible_distribution_major_version >= "22")
+
+- name: "Install publishing software"
+  dnf: name={{ item }} state=present
+  with_items:
+    - aspell-de
+    - calibre
+    - hunspell-de
+    - kile
+    - libreoffice
+#      - libreoffice-langpack-de.x86_64
+    - libreoffice-calc
+    - libreoffice-draw
+    - libreoffice-impress
+    - libreoffice-writer
+    - pandoc
+    - pandoc-pdf
+    - sigil
+    - texlive
+    - texlive-tocbibind
+    - texlive-multirow
+    - texlive-babel-german
+    - texlive-german 
+    - texlive
+    - texlive-units
+#    - texlive-latex-extra
+    - texlive-collection-latexextra
+  when: (ansible_distribution == "Fedora"  and ansible_distribution_major_version >= "22")
 
 
 - name: "clean up dnf"
