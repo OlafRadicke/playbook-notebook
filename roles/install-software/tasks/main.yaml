@@ -1,9 +1,37 @@
 ---
+
+- name: "install dnf support of ansible"
+  shell: "dnf install -y python-dnf"
+
 - name: "install rpmfusion repo free"
   shell: "dnf install -y http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
 
 - name: "install rpmfusion repo nonfree"
   shell: "dnf install -y http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+
+
+- name: "install seafile repo"
+  copy:
+    src: "../files/seafile.repo"
+    dest: "/etc/yum.repos.d/seafile.repo"
+    owner: "root"
+    group: "root"
+
+- name: "install seafiles"
+  dnf:
+    name: "seafile-client-qt"
+    state: "latest"
+
+- name: "install lib for selinux config"
+  dnf:
+    name: "libselinux-python"
+    state: "latest"
+
+- name: "install card reader support"
+  dnf:
+    name: "pcsc-lite-ccid"
+    state: "latest"
+
 
 - name: "Install desktop software"
   dnf: 
@@ -12,9 +40,11 @@
   with_items:
 #    - chromium
 #    - flash-plugin
+    - emacs-nox
     - fslint
 #    - google-chrome-stable
     - gnucash
+    - kwrite
     - kate
     - kate-plugins
     - keepassx
@@ -74,5 +104,32 @@
   when: (ansible_distribution == "Fedora"  and ansible_distribution_major_version >= "22")
 
 
+- name: "Install virtualisation software"
+  dnf: name={{ item }} state=present
+  with_items:
+    - virt-manager
+    - libvirt
+    - qemu-kvm
+
 - name: "clean up dnf"
   shell: "dnf clean all"
+  
+- name: "create /home/DATA/libvirt/images"
+  file: 
+    path: "/home/DATA/libvirt/images"
+    state: "directory"
+    mode: "0777"
+
+
+- name: "create kvm /home/DATA link"
+  file: 
+    src: "/home/DATA/libvirt/images"
+    dest: "/var/lib/libvirt/images"
+    owner: "root"
+    group: "root"
+    state: "link"
+    force: "yes"
+
+- name: "switch off selinux"
+  selinux:
+    state: "disabled"
